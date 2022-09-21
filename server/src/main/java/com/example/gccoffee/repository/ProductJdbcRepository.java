@@ -43,13 +43,21 @@ public class ProductJdbcRepository implements ProductRepository{
 
     @Override
     public Product update(Product product) {
-        return null;
+        var update = jdbcTemplate.update(
+                "UPDATE products SET product_name=:productName, category = :category,price = :price, description=:description, created_at = :createdAt,updated_at =:updatedAt"+
+                        " WHERE product_id = UUID_TO_BIN(:productId)",
+                toParamMap(product)
+        );
+        if(update !=1){
+            throw new RuntimeException("Nothing was updated");
+        }
+        return product;
     }
 
     @Override
     public Optional<Product> findById(UUID productId) {
         try{
-        return Optional.of(
+        return Optional.ofNullable(
                 jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_id = UUID_TO_BIN(:productId)",
                         Collections.singletonMap("productId", productId.toString().getBytes()),productRowMapper)
         );
@@ -83,7 +91,7 @@ public class ProductJdbcRepository implements ProductRepository{
 
     @Override
     public void deleteAll() {
-
+        jdbcTemplate.update("DELETE FROM products", Collections.emptyMap());
     }
 
     private static final RowMapper<Product> productRowMapper =(resultSet,i)->{
