@@ -4,9 +4,10 @@ import com.example.gccoffee.model.Category;
 import com.example.gccoffee.model.Product;
 import java.util.*;
 
+
 public interface ProductService {
     List<Product> getProductByCategory(Category category);
-    List<Product> getAllProduct();
+    List<Product> getAllProducts();
 
     Product createProduct(String productName,Category category, long price);
     Product createProduct(String productName,Category category, long price,String description);
